@@ -1,22 +1,25 @@
-# \[ICLR 2020\] Synthetic information bottleneck for transductive meta-learning
-This repo contains the implementation of the *synthetic information bottleneck* algorithm for few-shot classification on Mini-ImageNet,
-which is used in our ICLR 2020 paper 
-[Empirical Bayes Transductive Meta-Learning with Synthetic Gradients](https://openreview.net/forum?id=Hkg-xgrYvH).
+# Beyond SIB
 
-If our code is helpful for your research, please consider citing: 
-``` Bash
-@inproceedings{
-    Hu2020Empirical,
-    title={Empirical Bayes Transductive Meta-Learning with Synthetic Gradients},
-    author={Shell Xu Hu and Pablo Moreno and Yang Xiao and Xi Shen and Guillaume Obozinski and Neil Lawrence and Andreas Damianou},
-    booktitle={International Conference on Learning Representations (ICLR)},
-    year={2020},
-    url={https://openreview.net/forum?id=Hkg-xgrYvH}
-}
-```
+## TODO
 
-## Authors of the code
-[Shell Xu Hu](http://hushell.github.io/), [Xi Shen](https://xishen0220.github.io/) and [Yang Xiao](https://youngxiao13.github.io/)
+* Instead of just giving support feature and class-averaged distance to the module, we can give all **pair-wise distances** and **refine features** for labeled data as well as for unlabeled data
+
+* Try **weighted sum** instead of a simple mean
+
+* Apply to **different tasks**!
+
+
+## Discussion
+In short, we need a module to change the feature (or the classifier weight) according to some input. 
+As this input should represent a graph representing the pair-wise relationship, 
+we can compute some feature distances (cos sim) for each pair of sample, 
+or the distance between a class-averaged node and all the samples.
+
+Instead of using a transformer to learn to encode this graph, we should directly apply this computation to the features, which could include labeled or unlabeled data.
+
+Then, since we have a module aware of this pair-wise feature distance, it could output a feature gradient for each sample to make them more semanticly separatable in this feature space.
+
+At last, the classifier weight can be set as the mean value or weighted sum of the labeled sample in each class.
 
 
 ## Dependencies
