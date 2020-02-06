@@ -12,7 +12,7 @@ from dataset import dataset_setting
 from dataloader import BatchSampler, ValLoader, EpisodeSampler
 from utils.config import get_config
 from utils.utils import get_logger, set_random_seed
-import feat_refine_att
+
 torch.backends.cudnn.benchmark = True
 torch.backends.cudnn.enabled = True
 
@@ -73,20 +73,12 @@ testLoader = EpisodeSampler(imgDir = testDir,
 #############################################################################################
 ## Networks
 netFeat, args.nFeat = get_featnet(args.architecture, inputW, inputH)
-netRefine = feat_refine_att.Encoder(num_layers=args.num_layers,
-                                    model_dim=args.model_dim,
-                                    num_heads=args.num_heads,
-                                    ffn_dim=args.ffn_dim,
-                                    dropout = args.dropout)
-                                    
-netClassifier = feat_refine_att.ClassifierRefine(nKnovel = args.nClsEpisode, 
-                                                 nFeat = 640)
+netSIB = ClassifierSIB(args.nClsEpisode, args.nFeat, args.nStep)
 netFeat = netFeat.to(device)
-netRefine = netRefine.to(device)
-netClassifier = netClassifier.to(device)
+netSIB = netSIB.to(device)
 
 ## Optimizer
-optimizer = torch.optim.SGD(itertools.chain(*[netRefine.parameters(),netClassifier.parameters()]),
+optimizer = torch.optim.SGD(itertools.chain(*[netSIB.parameters(),]),
                             args.lr,
                             momentum=args.momentum,
                             weight_decay=args.weightDecay,
@@ -96,7 +88,7 @@ optimizer = torch.optim.SGD(itertools.chain(*[netRefine.parameters(),netClassifi
 criterion = nn.CrossEntropyLoss()
 
 ## Algorithm class
-alg = Algorithm(args, logger, netFeat, netRefine, netClassifier, optimizer, criterion)
+alg = Algorithm(args, logger, netFeat, netSIB, optimizer, criterion)
 
 
 #############################################################################################

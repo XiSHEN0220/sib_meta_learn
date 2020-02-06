@@ -203,7 +203,7 @@ if __name__ == '__main__' :
                                          normalize
                                         ])
 
-    TrainEpisodeSampler = EpisodeSampler(imgDir = './data/Mini-ImageNet/train/',
+    TrainEpisodeSampler = EpisodeSampler(imgDir = '../data/Mini-ImageNet/train_train/',
                                         nClsEpisode = 5,
                                         nSupport = 5,
                                         nQuery = 14,
@@ -212,5 +212,5 @@ if __name__ == '__main__' :
                                         inputW = 80,
                                         inputH = 80)
     data = TrainEpisodeSampler.getEpisode()
-    print (data['SupportTensor'].size())
+    print (data['SupportLabel'])
 
